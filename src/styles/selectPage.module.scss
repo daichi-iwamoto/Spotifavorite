@@ -1,0 +1,59 @@
+.select {
+  min-height: 100dvh;
+
+  .cardBlock {
+    position: relative;
+    height: calc(100dvh - 60px);
+    width: 100dwh;
+
+    .trackCard {
+      position: absolute;
+      height: 80%;
+      width: 90%;
+      display: none;
+      left: 5%;
+      top: 5%;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      backdrop-filter: blur(10px);
+      box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+      transition: 0.2s;
+
+      .trackImageBlock {
+        position: relative;
+        height: 70%;
+        margin: 0 auto;
+        overflow: hidden;
+
+        .trackImage {
+          padding: 10px;
+        }
+      }
+
+      .trackdescriptionBlock {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        color: white;
+        height: calc(30% - 80px);
+      }
+
+      .audioBlock {
+        width: 100%;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    .active {
+      display: block;
+      z-index: 99999;
+    }
+    .nextCard {
+      display: block;
+      opacity: 0;
+    }
+  }
+}
