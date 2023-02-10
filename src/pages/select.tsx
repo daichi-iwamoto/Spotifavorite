@@ -3,7 +3,7 @@ import Head from 'next/head'
 import globalStyle from '@/styles/global.module.scss'
 import selectPageStyle from '@/styles/selectPage.module.scss'
 import Image from 'next/image'
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState, TouchEvent } from 'react';
 import { SpotifyAccessTokenContext } from '@/pages/_app';
 import axios from 'axios';
 
@@ -96,7 +96,7 @@ export default function Home() {
 
           console.log(response.data.items);
           setRecentlyPlayedTracks(
-            response.data.items.map((item) => ({
+            response.data.items.map((item: any) => ({
               id: item.track.id,
               name: item.track.name,
               image: item.track.album.images[0].url,
@@ -113,10 +113,10 @@ export default function Home() {
     }
   }, [accessToken, setRecentlyPlayedTracks, refreshToken, setAccessToken]);
 
-  const CardTouchStart = (e) => {
+  const CardTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     setTouchStartPosition(e.touches[0].clientX);
   }
-  const CardMove = (e) => {
+  const CardMove = (e: TouchEvent<HTMLDivElement>) => {
     setTouchPosition(e.touches[0].clientX - touchStartPosition);
     // Math.abs(touchPosition)
   }
