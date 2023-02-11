@@ -1,0 +1,28 @@
+.list {
+  .recommend {
+    width: 100%;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .trackImageBlock {
+      position: relative;
+      overflow: hidden;
+      width: 30px;
+      height: 30px;
+      .image {
+        object-fit: cover;
+      }
+    }
+    .trackData {
+      width: 70%;
+      padding-left: 10px;
+    }
+    .audio {
+      width: 100%;
+      padding-top: 10px;
+    }
+  }
+}

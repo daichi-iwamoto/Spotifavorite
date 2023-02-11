@@ -27,22 +27,6 @@ export default function Home() {
       router.push(`https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodedRedirectUri}&scope=${scopes}`);
       return;
     }
-
-    // if (accessToken) {
-    //   const getTrack = async () => {
-    //     const response = await axios({
-    //       method: 'get',
-    //       url: 'https://api.spotify.com/v1/me/top/tracks',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         Authorization: `Bearer ${accessToken}`,
-    //       }
-    //     })
-
-    //     console.log("test", response)
-    //   }
-    //   getTrack();
-    // }
   }, [router, clientId, redirectUri, scopes, encodedRedirectUri, accessToken, refreshToken])
 
   return (

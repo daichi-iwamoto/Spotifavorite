@@ -3,12 +3,14 @@ import Head from 'next/head'
 import globalStyle from '@/styles/global.module.scss'
 import selectPageStyle from '@/styles/selectPage.module.scss'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useContext, useState, TouchEvent } from 'react';
-import { SpotifyAccessTokenContext } from '@/pages/_app';
+import { SpotifyAccessTokenContext, RecommendTracksContext } from '@/pages/_app';
 import axios from 'axios';
 
 export default function Home() {
   const { accessToken, setAccessToken, refreshToken } = useContext(SpotifyAccessTokenContext);
+  const { recommendTracks, setRecommendTracks } = useContext(RecommendTracksContext);
 
   const [userData, setUserData] = useState({
     id: "",
@@ -29,13 +31,13 @@ export default function Home() {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const [seedTrackIds, setSeedTrackIds] = useState<string[]>([])
+
   const cardMotion = {
     left: `calc(5% + ${touchPosition}px)`,
   }
 
   useEffect(() => {
-    console.log(accessToken, refreshToken);
-
     // access_tokenが切れており、refresh_tokenを保持している場合
     if (!accessToken && refreshToken) {
       const getAccessTokenWithRefreshToken = async () => {
@@ -94,7 +96,6 @@ export default function Home() {
             },
           });
 
-          console.log(response.data.items);
           setRecentlyPlayedTracks(
             response.data.items.map((item: any) => ({
               id: item.track.id,
@@ -120,18 +121,66 @@ export default function Home() {
     setTouchPosition(e.touches[0].clientX - touchStartPosition);
     // Math.abs(touchPosition)
   }
-  const CardTouchEnd = () => {
+  const CardTouchEnd = (trackId: string) => {
+    if (seedTrackIds.length >= 4) getRecommendations()
     if (touchPosition > 150) {
       setActiveIndex(activeIndex + 1)
       setTouchPosition(0)
+      setSeedTrackIds([...seedTrackIds, trackId])
+
+      if (activeIndex > recentlyPlayedTracks.length) {
+        alert("end!")
+      }
       return
     }
     if (touchPosition < -150) {
       setActiveIndex(activeIndex + 1)
       setTouchPosition(0)
+
+
+      if (activeIndex > recentlyPlayedTracks.length) {
+        alert("end!")
+      }
       return
     }
     setTouchPosition(0)
+  }
+
+  const getRecommendations = async () => {
+    const seedTracks: any = seedTrackIds.reduce((prevValue, _value, index) => index % 5 ? prevValue : [...prevValue, seedTrackIds.slice(index, index + 5)], [])
+
+    const recommendData = await Promise.all(
+      seedTracks.map(
+        async (tracks: any) => {
+          const seedTracksString = tracks.reduce((prevValue: any, value: any, index: number) => index == 0 ? value : `${prevValue},${value}`, "")
+          try {
+            const response = await axios({
+              method: 'get',
+              url: 'https://api.spotify.com/v1/recommendations',
+              headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${accessToken}`,
+              },
+              params: {
+                limit: 5,
+                seed_tracks: seedTracksString,
+              }
+            })
+            return response.data.tracks.map((track: any) => ({
+              id: track.id,
+              name: track.name,
+              image: track.album.images[0].url,
+              artist: track.artists[0].name,
+              preview_url: track.preview_url,
+            }))
+          }
+          catch (err) {
+            throw err
+          }
+        }
+      )
+    )
+    setRecommendTracks(recommendData.flat())
   }
 
   return (
@@ -152,11 +201,11 @@ export default function Home() {
         <section className={selectPageStyle.cardBlock}>
           {recentlyPlayedTracks.map((track, index) => (
             <div
-              key={track.id}
+              key={index}
               className={`${selectPageStyle.trackCard} ${index === activeIndex && selectPageStyle.active} ${index === activeIndex + 1 && selectPageStyle.nextCard}`}
               onTouchStart={CardTouchStart}
               onTouchMove={CardMove}
-              onTouchEnd={CardTouchEnd}
+              onTouchEnd={() => CardTouchEnd(track.id)}
               style={cardMotion}
             >
               <div className={selectPageStyle.trackImageBlock}>
@@ -173,6 +222,14 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </section>
+        <section className={selectPageStyle.submitBlock}>
+          {recommendTracks && (
+            <Link href="/recommendations" className={selectPageStyle.submit}>
+              Get Recommendations
+            </Link>
+          )
+          }
         </section>
       </main>
     </>
