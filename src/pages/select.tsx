@@ -147,7 +147,7 @@ export default function Home() {
   }
 
   const getRecommendations = async () => {
-    const seedTracks: any = seedTrackIds.reduce((prevValue, _value, index) => index % 5 ? prevValue : [...prevValue, seedTrackIds.slice(index, index + 5)], [])
+    const seedTracks: any = seedTrackIds.reduce((prevValue: any, _value, index) => index % 5 ? prevValue : [...prevValue, seedTrackIds.slice(index, index + 5)], [])
 
     const recommendData = await Promise.all(
       seedTracks.map(
