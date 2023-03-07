@@ -192,12 +192,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={selectPageStyle.select}>
-        <header className={globalStyle.header}>
-          <p className={globalStyle.userName}>{userData.name}</p>
-          <div className={globalStyle.imageBlock}>
-            <Image src={userData.image} alt="" layout="fill" className={globalStyle.image} />
-          </div>
-        </header>
+        {userData && (
+          <header className={globalStyle.header}>
+            <p className={globalStyle.projectName}>Spotifavorite &#x1f3a7;</p>
+            <div className={globalStyle.imageBlock}>
+              <Image src={userData.image} alt="" layout="fill" className={globalStyle.image} />
+            </div>
+          </header>
+        )}
         <section className={selectPageStyle.cardBlock}>
           {recentlyPlayedTracks.map((track, index) => (
             <div
@@ -226,7 +228,7 @@ export default function Home() {
         <section className={selectPageStyle.submitBlock}>
           {recommendTracks && (
             <Link href="/recommendations" className={selectPageStyle.submit}>
-              Get Recommendations
+              Get Recommendations »
             </Link>
           )
           }

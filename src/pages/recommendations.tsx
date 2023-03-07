@@ -1,6 +1,7 @@
 "use client";
 import Head from 'next/head'
 import Image from 'next/image'
+import globalStyle from '@/styles/global.module.scss'
 import recommendationsStyle from '@/styles/recommendations.module.scss'
 import { useContext, useEffect, useMemo } from 'react';
 import { RecommendTracksContext } from '@/pages/_app';
@@ -17,6 +18,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <header className={globalStyle.header}>
+          <p className={globalStyle.projectName}>Recommend for you</p>
+        </header>
         <div className={recommendationsStyle.list}>
           {recommendTracks?.map((track, index) => (
             <div key={index} className={recommendationsStyle.recommend}>
